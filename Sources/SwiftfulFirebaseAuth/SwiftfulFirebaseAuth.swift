@@ -1,3 +1,3 @@
-final class DummyClass {
-    static let test = "Test"
+public final class DummyClass {
+    public static let test = "Test"
 }
