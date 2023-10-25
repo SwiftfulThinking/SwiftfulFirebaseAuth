@@ -7,30 +7,34 @@
 
 import Foundation
 
+public struct AuthInfo {
+    let profile: UserAuthInfo?
+    
+    var userId: String? {
+        profile?.uid
+    }
+    
+    var isSignedIn: Bool {
+        profile != nil
+    }
+}
+
 public final class AuthManager {
     
     private let provider: AuthProvider
     
-    @Published public private(set) var currentUser: UserAuthInfo?
-    
-    public var currentUserId: String? {
-        currentUser?.uid
-    }
-    
-    public var currentUserIsSignedIn: Bool {
-        currentUser != nil
-    }
+    @Published public private(set) var currentUser: AuthInfo?
     
     public init(provider: AuthProvider) {
         self.provider = provider
-        self.currentUser = provider.getAuthenticatedUser()
+        self.currentUser = AuthInfo(profile: provider.getAuthenticatedUser())
         self.streamSignInChanges()
     }
     
     private func streamSignInChanges() {
         Task {
             for await user in await provider.authenticationDidChangeStream() {
-                currentUser = user
+                currentUser = AuthInfo(profile: user)
             }
         }
     }
