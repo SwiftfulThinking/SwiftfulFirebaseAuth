@@ -19,14 +19,27 @@ public struct AuthInfo {
     }
 }
 
+public enum Configuration {
+    case mock, firebase
+    
+    var provider: AuthProvider {
+        switch self {
+        case .firebase:
+            return FirebaseAuthProvider()
+        case .mock:
+            return MockAuthProvider()
+        }
+    }
+}
+
 public final class AuthManager {
     
     private let provider: AuthProvider
     
     @Published public private(set) var currentUser: AuthInfo?
     
-    public init(provider: AuthProvider) {
-        self.provider = provider
+    public init(configuration: Configuration) {
+        self.provider = configuration.provider
         self.currentUser = AuthInfo(profile: provider.getAuthenticatedUser())
         self.streamSignInChanges()
     }
