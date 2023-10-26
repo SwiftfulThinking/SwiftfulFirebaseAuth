@@ -8,13 +8,13 @@
 import Foundation
 
 public struct AuthInfo {
-    let profile: UserAuthInfo?
+    public let profile: UserAuthInfo?
     
-    var userId: String? {
+    public var userId: String? {
         profile?.uid
     }
     
-    var isSignedIn: Bool {
+    public var isSignedIn: Bool {
         profile != nil
     }
 }
