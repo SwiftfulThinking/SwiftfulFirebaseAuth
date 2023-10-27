@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 final class MockAuthProvider: AuthProvider {
     
-    private var mockUser: UserAuthInfo {
+    static private var mockUser: UserAuthInfo {
         UserAuthInfo(
             uid: "mock123",
             email: "mock123@mock.com",
@@ -20,17 +21,27 @@ final class MockAuthProvider: AuthProvider {
         )
     }
     
-    func getAuthenticatedUser() -> UserAuthInfo? {
-        if UserDefaults.userIsSignedIn {
-            return mockUser
+    @Published private(set) var authenticatedUser: UserAuthInfo? {
+        didSet {
+            UserDefaults.userIsSignedIn = authenticatedUser != nil
+            continuation?.yield(authenticatedUser)
         }
-        
-        return nil
+    }
+    
+    init() {
+        self.authenticatedUser = UserDefaults.userIsSignedIn ? MockAuthProvider.mockUser : nil
+    }
+    
+    private var continuation: AsyncStream<UserAuthInfo?>.Continuation? = nil
+    
+    
+    func getAuthenticatedUser() -> UserAuthInfo? {
+        authenticatedUser
     }
     
     func authenticationDidChangeStream() -> AsyncStream<UserAuthInfo?> {
         AsyncStream { continuation in
-            continuation.yield(getAuthenticatedUser())
+            self.continuation = continuation
         }
     }
     
@@ -51,11 +62,12 @@ final class MockAuthProvider: AuthProvider {
         // Increment auth count
         UserDefaults.userSignedInAuthCount = newCount
         
+        
         // Persist mock sign in
-        UserDefaults.userIsSignedIn = true
+        let mockUser = MockAuthProvider.mockUser
+        authenticatedUser = mockUser
         
         let isNewUser = newCount == 1
-        
         return (mockUser, isNewUser)
     }
     
@@ -72,7 +84,7 @@ final class MockAuthProvider: AuthProvider {
         UserDefaults.userSignedInAuthCount = 0
         
         // Persist mock sign out
-        UserDefaults.userIsSignedIn = false
+        authenticatedUser = nil
     }
     
 }
