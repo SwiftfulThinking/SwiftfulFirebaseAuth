@@ -18,12 +18,12 @@ public protocol AuthProvider {
 }
 
 public struct UserAuthInfo {
-    let uid: String
-    let email: String?
-    let isAnonymous: Bool
-    let authProviders: [AuthProviderOption]
-    let displayName: String?
-    let phoneNumber: String?
+    public let uid: String
+    public let email: String?
+    public let isAnonymous: Bool
+    public let authProviders: [AuthProviderOption]
+    public let displayName: String?
+    public let phoneNumber: String?
     
     init(
         uid: String,
@@ -51,7 +51,7 @@ public struct UserAuthInfo {
     }
 }
 
-enum AuthProviderOption: String {
+public enum AuthProviderOption: String {
     case google = "google.com"
     case apple = "apple.com"
     case email = "password"
