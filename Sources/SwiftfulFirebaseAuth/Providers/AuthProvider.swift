@@ -24,6 +24,7 @@ public struct UserAuthInfo {
     public let authProviders: [AuthProviderOption]
     public let displayName: String?
     public let phoneNumber: String?
+    public let photoURL: URL?
     
     init(
         uid: String,
@@ -31,7 +32,8 @@ public struct UserAuthInfo {
         isAnonymous: Bool = false,
         authProviders: [AuthProviderOption] = [],
         displayName: String? = nil,
-        phoneNumber: String? = nil
+        phoneNumber: String? = nil,
+        photoURL: URL? = nil
     ) {
         self.uid = uid
         self.email = email
@@ -39,6 +41,7 @@ public struct UserAuthInfo {
         self.authProviders = authProviders
         self.displayName = displayName
         self.phoneNumber = phoneNumber
+        self.photoURL = photoURL
     }
     
     init(user: User) {
@@ -48,6 +51,7 @@ public struct UserAuthInfo {
         self.authProviders = user.providerData.compactMap({ AuthProviderOption(rawValue: $0.providerID) })
         self.displayName = user.displayName
         self.phoneNumber = user.phoneNumber
+        self.photoURL = user.photoURL
     }
 }
 
