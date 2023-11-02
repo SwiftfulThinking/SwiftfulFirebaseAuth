@@ -2,6 +2,14 @@
 
 Convenience methods to manage Firebase Authentication in Swift projects.
 
+-
+-
+-
+WORK IN PROGRESS
+-
+-
+-
+
 ## Usage
 
 Import the package to your project.
