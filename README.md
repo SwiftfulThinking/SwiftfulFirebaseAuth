@@ -2,33 +2,33 @@
 
 Convenience methods to manage Firebase Authentication in Swift projects.
 
-## Installation
-
-**Swift Package Manager** 
-
-* File -> Swift Packages -> Add Package Dependency ->
-* Add URL for this repository: https://github.com/SwiftfulThinking/SwiftfulFirebaseAuth.git
-
 ## Usage
 
-Import the package to your file.
+Import the package to your project.
+* File -> Swift Packages -> Add Package Dependency
+* Add URL for this repository: https://github.com/SwiftfulThinking/SwiftfulFirebaseAuth.git
+
+#### Import the package to your file.
 ```swift
 import SwiftfulFirebaseAuth
 ```
 
-Create one instance of AuthManager for your application.
+#### Create one instance of AuthManager for your application.
 ```swift
 let authManager = AuthManager(configuration: .firebase)
 ```
 
 
-Use Mock configuration to avoid running Firebase while developing (ex. for SwiftUI Previews).
+#### Use Mock configuration to avoid running Firebase while developing (ex. for SwiftUI Previews).
 ```swift
 let authManager = AuthManager(configuration: .mock)
 ```
 
+#### Configure your Firebase project.
+* Add the Firebase SDK to your application and configure() the SDK prior to access the AuthManager.
+* WORK IN PROGRESS
 
-Authentication users.
+#### Authentication users.
 ```swift
 Task {
      do {
@@ -44,16 +44,18 @@ Task {
 }
 ```
 
-The framework currently supports Apple and Google SSO.
+#### The framework currently supports Apple and Google SSO.
 ```swift
+// Note: You first need to add the Signing Capability for Sign https://developer.apple.com/documentation/xcode/configuring-sign-in-with-apple
 try await authManager.signInApple()
 ```
 ```swift
+// Note: Google SDK is already imported into the Framework.
 try await authManager.signInGoogle()
 ```
 
 
-Synchronously get user's authentication info.
+#### Synchronously get user's authentication info.
 ```swift
 let userAuthProfile: UserAuthInfo? = authManager.currentUser.profile
 let userIsSignedIn: Bool = authManager.currentUser.isSignedIn
@@ -61,7 +63,7 @@ let userId: String? = authManager.currentUser.userId
 ```
 
 
-Asynchronously listen for changes to user's authentication info.
+#### Asynchronously listen for changes to user's authentication info.
 ```swift
 Task {
      for await authInfo in authManager.$currentUser.values {
@@ -74,7 +76,7 @@ Task {
 ```
 
 
-Sign out or delete user's authentication.
+#### Sign out or delete user's authentication.
 ```swift
 try authManager.signOut()
 ```
@@ -83,7 +85,7 @@ try await authManager.deleteAuthentication()
 ```
 
 
-Convenience View for SignInWithApple button in SwiftUI.
+#### Convenience View for SignInWithApple button in SwiftUI.
 ```swift
 SignInWithAppleButtonView(
      type: .signUp,
