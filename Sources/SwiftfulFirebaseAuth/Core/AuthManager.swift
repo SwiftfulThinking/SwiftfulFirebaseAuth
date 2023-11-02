@@ -36,7 +36,7 @@ public final class AuthManager {
     
     private let provider: AuthProvider
     
-    @Published public private(set) var currentUser: AuthInfo?
+    @Published public private(set) var currentUser: AuthInfo
     
     public init(configuration: Configuration) {
         self.provider = configuration.provider
