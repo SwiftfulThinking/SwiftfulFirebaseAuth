@@ -33,9 +33,10 @@ Authentication users.
 Task {
      do {
           let (userAuthInfo, isNewUser) = try await authManager.signInApple()
+          // User is signed in
 
           if isNewUser {
-               // create
+               // Create user profile in Firestore
           }
      } catch {
           // User auth failed
