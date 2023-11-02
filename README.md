@@ -1,4 +1,4 @@
-# SwiftfulFirebaseAuth
+# SwiftfulFirebaseAuth 🤙
 
 Convenience methods to manage Firebase Authentication in Swift projects.
 
