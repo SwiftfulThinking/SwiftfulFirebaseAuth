@@ -72,8 +72,8 @@ final class FirebaseAuthProvider: AuthProvider {
     }
     
     @MainActor
-    func authenticateUser_Google() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
-        let helper = SignInWithGoogleHelper()
+    func authenticateUser_Google(GIDClientID: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        let helper = SignInWithGoogleHelper(GIDClientID: GIDClientID)
         
         // Sign in to Google account
         let googleResponse = try await helper.signIn()

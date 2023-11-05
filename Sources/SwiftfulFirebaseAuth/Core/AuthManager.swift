@@ -52,8 +52,8 @@ public final class AuthManager {
         }
     }
     
-    public func signInGoogle() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
-        try await provider.authenticateUser_Google()
+    public func signInGoogle(GIDClientID: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        try await provider.authenticateUser_Google(GIDClientID: GIDClientID)
     }
     
     public func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
