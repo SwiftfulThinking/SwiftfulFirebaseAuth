@@ -54,7 +54,18 @@ private struct SignInWithAppleButtonViewRepresentable: UIViewRepresentable {
 }
 
 #Preview("SignInWithAppleButtonView") {
-    SignInWithAppleButtonView(cornerRadius: 30)
-        .frame(height: 60)
-        .padding()
+    VStack(spacing: 4) {
+        SignInWithAppleButtonView(
+            type: .continue,
+            style: .black, cornerRadius: 30)
+            .frame(height: 60)
+            .background(Color.red)
+
+        SignInWithGoogleButtonView(
+            type: .continue,
+            style: .black, cornerRadius: 30)
+            .frame(height: 60)
+            .background(Color.red)
+    }
+    .padding()
 }

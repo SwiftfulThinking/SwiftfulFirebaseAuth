@@ -28,7 +28,11 @@ let package = Package(
                 .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
                 .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS"),
                 .product(name: "GoogleSignInSwift", package: "GoogleSignIn-iOS")
-            ]),
+            ],
+            resources: [
+                .process("Assets")
+            ]
+        ),
         .testTarget(
             name: "SwiftfulFirebaseAuthTests",
             dependencies: ["SwiftfulFirebaseAuth"]),
