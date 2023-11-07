@@ -109,7 +109,7 @@ public struct SignInWithGoogleButtonView: View {
                     .frame(width: 16, height: 16)
                 
                 Text("\(buttonText) Google")
-                    .font(.system(size: 23))
+                    .font(.system(size: 20))
                     .fontWeight(.medium)
             }
             .foregroundColor(foregroundColor)
