@@ -47,13 +47,18 @@ struct GoogleSignInResult {
 }
 
 final class SignInWithGoogleHelper {
+    
+    init(GIDClientID: String) {
+        let config = GIDConfiguration(clientID: GIDClientID)
+        GIDSignIn.sharedInstance.configuration = config
+    }
         
     @MainActor
     func signIn(viewController: UIViewController? = nil) async throws -> GoogleSignInResult {
         guard let topViewController = viewController ?? UIApplication.topViewController() else {
             throw GoogleSignInError.noViewController
         }
-        
+                
         let gidSignInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: topViewController)
         
         guard let result = GoogleSignInResult(result: gidSignInResult) else {

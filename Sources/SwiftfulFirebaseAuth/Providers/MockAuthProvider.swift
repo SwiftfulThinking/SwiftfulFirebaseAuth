@@ -45,7 +45,7 @@ final class MockAuthProvider: AuthProvider {
         }
     }
     
-    func authenticateUser_Google() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+    func authenticateUser_Google(GIDClientID: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         return signInMockUser()
     }
