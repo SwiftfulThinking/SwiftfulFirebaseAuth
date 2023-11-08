@@ -115,3 +115,6 @@ try authManager.signOut()
 ```swift
 try await authManager.deleteAuthentication()
 ```
+
+## Want to contribute?
+Open a PR! New Sign-In Methods must use Swift Concurrency (async/await).
