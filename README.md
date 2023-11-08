@@ -67,7 +67,7 @@ SignInWithAppleButtonView(
 ```
 
 ##### Sign In With Google
-1. Enable Apple as a Sign-In Method in Firebase Authentication console.
+1. Enable Apple as a Sign-In Method in Firebase Authentication console & update the info.plist file.
 2. Add custom URL scheme (URL Types -> REVERSED_CLIENT_ID)
 
 https://firebase.google.com/docs/auth/ios/google-signin
