@@ -99,7 +99,6 @@ let userId: String? = authManager.currentUser.userId
 ```swift
 Task {
      for await authInfo in authManager.$currentUser.values {
-                    
           let userAuthProfile: UserAuthInfo? = authInfo.profile
           let userIsSignedIn: Bool = authInfo.isSignedIn
           let userId: String? = authInfo.userId
