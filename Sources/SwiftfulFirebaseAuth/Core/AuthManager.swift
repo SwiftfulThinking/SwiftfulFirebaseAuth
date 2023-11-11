@@ -37,7 +37,6 @@ public final class AuthManager {
     private let provider: AuthProvider
     
     @Published public private(set) var currentUser: AuthInfo
-    private var task: Task<Void,Never>? = nil
     
     public init(configuration: Configuration) {
         self.provider = configuration.provider
@@ -46,7 +45,7 @@ public final class AuthManager {
     }
     
     private func streamSignInChanges() {
-        task = Task {
+        Task {
             for await user in await provider.authenticationDidChangeStream() {
                 currentUser = AuthInfo(profile: user)
             }
@@ -72,7 +71,6 @@ public final class AuthManager {
     }
     
     private func clearLocaData() {
-        task?.cancel()
         currentUser = AuthInfo(profile: nil)
     }
 }
