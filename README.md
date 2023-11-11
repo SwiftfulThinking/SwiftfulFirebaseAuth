@@ -2,13 +2,25 @@
 
 Convenience methods to manage Firebase Authentication in Swift projects.
 
--
--
--
-WORK IN PROGRESS
--
--
--
+- ✅ Sign In With Apple
+- ✅ Sign In With Google
+
+```swift
+Task {
+     do {
+          let (userAuthInfo, isNewUser) = try await authManager.signInApple()
+          // User is signed in
+
+          if isNewUser {
+               // New user -> Create user profile in Firestore
+          } else {
+               // Existing user -> sign in
+          }
+     } catch {
+          // User auth failed
+     }
+}
+```
 
 ## Usage
 
@@ -33,33 +45,45 @@ let authManager = AuthManager(configuration: .mock)
 ```
 
 #### Configure your Firebase project.
-* Add the Firebase SDK to your application and configure() the SDK prior to access the AuthManager.
-* WORK IN PROGRESS
+Add the Firebase SDK to your application and configure() the SDK on launch.
 
-#### Authentication users.
+##### Sign In With Apple
+1. Enable Apple as a Sign-In Method in Firebase Authentication console.
+2. Add Sign in with Apple Signing Capability to your Xcode project.
+
+https://firebase.google.com/docs/auth/ios/apple
+
+
 ```swift
-Task {
-     do {
-          let (userAuthInfo, isNewUser) = try await authManager.signInApple()
-          // User is signed in
-
-          if isNewUser {
-               // Create user profile in Firestore
-          }
-     } catch {
-          // User auth failed
-     }
-}
-```
-
-#### The framework currently supports Apple and Google SSO.
-```swift
-// Note: You first need to add the Signing Capability for Sign https://developer.apple.com/documentation/xcode/configuring-sign-in-with-apple
 try await authManager.signInApple()
 ```
 ```swift
-// Note: Google SDK is already imported into the Framework.
-try await authManager.signInGoogle()
+SignInWithAppleButtonView(
+     type: .signUp,
+     style: .black,
+     cornerRadius: 10
+)
+.frame(height: 50)
+```
+
+##### Sign In With Google
+1. Enable Apple as a Sign-In Method in Firebase Authentication console & update the info.plist file.
+2. Add custom URL scheme (URL Types -> REVERSED_CLIENT_ID)
+
+https://firebase.google.com/docs/auth/ios/google-signin
+
+
+```swift
+let clientId = FirebaseApp.app()?.options.clientId
+try await authManager.signInGoogle(GIDClientID: clientId)
+```
+```swift
+SignInWithGoogleButtonView(
+     type: .signUp,
+     style: .black,
+     cornerRadius: 10
+)
+.frame(height: 50)
 ```
 
 
@@ -75,7 +99,6 @@ let userId: String? = authManager.currentUser.userId
 ```swift
 Task {
      for await authInfo in authManager.$currentUser.values {
-                    
           let userAuthProfile: UserAuthInfo? = authInfo.profile
           let userIsSignedIn: Bool = authInfo.isSignedIn
           let userId: String? = authInfo.userId
@@ -92,13 +115,5 @@ try authManager.signOut()
 try await authManager.deleteAuthentication()
 ```
 
-
-#### Convenience View for SignInWithApple button in SwiftUI.
-```swift
-SignInWithAppleButtonView(
-     type: .signUp,
-     style: .black,
-     cornerRadius: 10
-)
-.frame(height: 50)
-```
+## Want to contribute?
+Open a PR! New Sign-In Methods must use Swift Concurrency (async/await).
