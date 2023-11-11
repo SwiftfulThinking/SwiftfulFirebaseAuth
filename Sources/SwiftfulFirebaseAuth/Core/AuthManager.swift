@@ -62,9 +62,15 @@ public final class AuthManager {
     
     public func signOut() throws {
         try provider.signOut()
+        clearLocaData()
     }
     
     public func deleteAuthentication() async throws {
         try await provider.deleteAccount()
+        clearLocaData()
+    }
+    
+    private func clearLocaData() {
+        currentUser = AuthInfo(profile: nil)
     }
 }
