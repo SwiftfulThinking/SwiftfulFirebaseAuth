@@ -17,7 +17,7 @@ public protocol AuthProvider {
     func deleteAccount() async throws
 }
 
-public struct UserAuthInfo {
+public struct UserAuthInfo: Codable {
     public let uid: String
     public let email: String?
     public let isAnonymous: Bool
@@ -55,7 +55,7 @@ public struct UserAuthInfo {
     }
 }
 
-public enum AuthProviderOption: String {
+public enum AuthProviderOption: String, Codable {
     case google = "google.com"
     case apple = "apple.com"
     case email = "password"
