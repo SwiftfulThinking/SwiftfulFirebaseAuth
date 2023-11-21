@@ -55,7 +55,7 @@ final class FirebaseAuthProvider: AuthProvider {
             let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
             
             if isNewUser {
-                // Update Firebase user profile with info from Google account
+                // Update Firebase user profile with info from Apple account
                 if let updatedUser = try await updateUserProfile(displayName: appleResponse.displayName, photoUrl: nil) {
                     firebaserUser = updatedUser
                 }
