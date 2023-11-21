@@ -60,6 +60,7 @@ public final class AuthManager {
     
     public func signInGoogle(GIDClientID: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         let value = try await provider.authenticateUser_Google(GIDClientID: GIDClientID)
+        currentUser = AuthInfo(profile: value.user)
         
         defer {
             streamSignInChangesIfNeeded()
@@ -70,7 +71,8 @@ public final class AuthManager {
     
     public func signInApple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         let value = try await provider.authenticateUser_Apple()
-        
+        currentUser = AuthInfo(profile: value.user)
+
         defer {
             streamSignInChangesIfNeeded()
         }
