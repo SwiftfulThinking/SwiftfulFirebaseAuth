@@ -45,6 +45,24 @@ public final class AuthManager {
         self.streamSignInChangesIfNeeded()
     }
     
+    func getUserId() throws -> String {
+        guard let id = currentUser.userId else {
+            // If there is no userId, user should not be signed in.
+            // Sign out anyway, in case there's an edge case?
+            defer {
+                try? signOut()
+            }
+            
+            throw AuthManagerError.noUserId
+        }
+        
+        return id
+    }
+    
+    enum AuthManagerError: Error {
+        case noUserId
+    }
+    
     private func streamSignInChangesIfNeeded() {
         // Only stream changes if a user is signed in
         // This is mainly for if their auth gets removed via Firebase Console or another application, we can automatically sign user out
