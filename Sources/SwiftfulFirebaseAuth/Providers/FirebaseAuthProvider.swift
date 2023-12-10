@@ -141,13 +141,11 @@ final class FirebaseAuthProvider: AuthProvider {
         }
         
         if let firstName {
-            request?.firstName = firstName
-            didMakeChanges = true
+            UserDefaults.auth.firstName = firstName
         }
         
         if let lastName {
-            request?.lastName = lastName
-            didMakeChanges = true
+            UserDefaults.auth.lastName = lastName
         }
         
         if let photoUrl {
@@ -179,7 +177,14 @@ final class FirebaseAuthProvider: AuthProvider {
 
 }
 
-extension UserProfileChangeRequest {
+extension UserDefaults {
+    
+    static let auth = UserDefaults(suiteName: "auth_defaults")!
+    
+    func reset() {
+        firstName = nil
+        lastName = nil
+    }
     
     var firstName: String? {
         get {
@@ -199,14 +204,3 @@ extension UserProfileChangeRequest {
         }
     }
 }
-
-//extension User {
-//    
-//    var firstName: String? {
-//        value(forKey: "first_name") as? String
-//    }
-//    
-//    var lastName: String? {
-//        value(forKey: "last_name") as? String
-//    }
-//}

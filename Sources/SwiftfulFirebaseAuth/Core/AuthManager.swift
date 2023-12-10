@@ -111,6 +111,7 @@ public final class AuthManager {
     private func clearLocalData() {
         task?.cancel()
         task = nil
+        UserDefaults.auth.reset()
         currentUser = AuthInfo(profile: nil)
     }
 }
