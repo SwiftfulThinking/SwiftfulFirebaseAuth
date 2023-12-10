@@ -23,6 +23,8 @@ public struct UserAuthInfo: Codable {
     public let isAnonymous: Bool
     public let authProviders: [AuthProviderOption]
     public let displayName: String?
+    public let firstName: String?
+    public let lastName: String?
     public let phoneNumber: String?
     public let photoURL: URL?
     public let creationDate: Date?
@@ -34,6 +36,8 @@ public struct UserAuthInfo: Codable {
         isAnonymous: Bool = false,
         authProviders: [AuthProviderOption] = [],
         displayName: String? = nil,
+        firstName: String? = nil,
+        lastName: String? = nil,
         phoneNumber: String? = nil,
         photoURL: URL? = nil,
         creationDate: Date? = nil,
@@ -44,6 +48,8 @@ public struct UserAuthInfo: Codable {
         self.isAnonymous = isAnonymous
         self.authProviders = authProviders
         self.displayName = displayName
+        self.firstName = firstName
+        self.lastName = lastName
         self.phoneNumber = phoneNumber
         self.photoURL = photoURL
         self.creationDate = creationDate
@@ -56,6 +62,8 @@ public struct UserAuthInfo: Codable {
         self.isAnonymous = user.isAnonymous
         self.authProviders = user.providerData.compactMap({ AuthProviderOption(rawValue: $0.providerID) })
         self.displayName = user.displayName
+        self.firstName = user.firstName
+        self.lastName = user.lastName
         self.phoneNumber = user.phoneNumber
         self.photoURL = user.photoURL
         self.creationDate = user.metadata.creationDate
@@ -68,6 +76,8 @@ public struct UserAuthInfo: Codable {
         case isAnonymous = "is_anonymous"
         case authProviders = "auth_providers"
         case displayName = "display_name"
+        case firstName = "first_name"
+        case lastName = "last_name"
         case phoneNumber = "phone_number"
         case photoURL = "photo_url"
         case creationDate = "creation_date"
