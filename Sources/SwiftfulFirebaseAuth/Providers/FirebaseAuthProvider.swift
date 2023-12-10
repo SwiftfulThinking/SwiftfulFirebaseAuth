@@ -200,7 +200,7 @@ extension UserProfileChangeRequest {
     }
 }
 
-extension User {
+public extension User {
     
     var firstName: String? {
         value(forKey: "first_name") as? String
