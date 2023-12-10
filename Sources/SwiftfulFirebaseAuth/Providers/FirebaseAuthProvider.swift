@@ -200,13 +200,13 @@ extension UserProfileChangeRequest {
     }
 }
 
-public extension User {
-    
-    var firstName: String? {
-        value(forKey: "first_name") as? String
-    }
-    
-    var lastName: String? {
-        value(forKey: "last_name") as? String
-    }
-}
+//public extension User {
+//    
+//    var firstName: String? {
+//        value(forKey: "first_name") as? String
+//    }
+//    
+//    var lastName: String? {
+//        value(forKey: "last_name") as? String
+//    }
+//}

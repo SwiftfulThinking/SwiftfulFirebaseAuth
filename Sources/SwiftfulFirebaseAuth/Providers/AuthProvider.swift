@@ -62,8 +62,8 @@ public struct UserAuthInfo: Codable {
         self.isAnonymous = user.isAnonymous
         self.authProviders = user.providerData.compactMap({ AuthProviderOption(rawValue: $0.providerID) })
         self.displayName = user.displayName
-        self.firstName = user.firstName
-        self.lastName = user.lastName
+        self.firstName = nil
+        self.lastName = nil
         self.phoneNumber = user.phoneNumber
         self.photoURL = user.photoURL
         self.creationDate = user.metadata.creationDate
