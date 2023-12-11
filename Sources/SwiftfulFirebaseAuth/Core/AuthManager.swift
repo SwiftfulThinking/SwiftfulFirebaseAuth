@@ -45,7 +45,7 @@ public final class AuthManager {
         self.streamSignInChangesIfNeeded()
     }
     
-    func getUserId() throws -> String {
+    public func getUserId() throws -> String {
         guard let id = currentUser.userId else {
             // If there is no userId, user should not be signed in.
             // Sign out anyway, in case there's an edge case?
