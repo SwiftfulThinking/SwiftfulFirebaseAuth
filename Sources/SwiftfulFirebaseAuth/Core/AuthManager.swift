@@ -32,6 +32,7 @@ public enum Configuration {
     }
 }
 
+@MainActor
 public final class AuthManager {
     
     private let provider: AuthProvider
@@ -70,7 +71,7 @@ public final class AuthManager {
         guard currentUser.isSignedIn else { return }
         
         self.task = Task {
-            for await user in await provider.authenticationDidChangeStream() {
+            for await user in provider.authenticationDidChangeStream() {
                 currentUser = AuthInfo(profile: user)
             }
         }
