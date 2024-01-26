@@ -55,8 +55,13 @@ final class FirebaseAuthProvider: AuthProvider {
             let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
             
             if isNewUser {
-                // Update Firebase user profile with info from Google account
-                if let updatedUser = try await updateUserProfile(displayName: appleResponse.displayName, photoUrl: nil) {
+                // Update Firebase user profile with info from Apple account
+                if let updatedUser = try await updateUserProfile(
+                    displayName: appleResponse.displayName,
+                    firstName: appleResponse.firstName,
+                    lastName: appleResponse.lastName,
+                    photoUrl: nil
+                ) {
                     firebaserUser = updatedUser
                 }
             }
@@ -91,7 +96,12 @@ final class FirebaseAuthProvider: AuthProvider {
 
         if isNewUser {
             // Update Firebase user profile with info from Google account
-            if let updatedUser = try await updateUserProfile(displayName: googleResponse.displayName, photoUrl: googleResponse.profileImageUrl) {
+            if let updatedUser = try await updateUserProfile(
+                displayName: googleResponse.displayName,
+                firstName: googleResponse.firstName,
+                lastName: googleResponse.lastName,
+                photoUrl: googleResponse.profileImageUrl
+            ) {
                 firebaserUser = updatedUser
             }
         }
@@ -121,13 +131,21 @@ final class FirebaseAuthProvider: AuthProvider {
         try await Auth.auth().signIn(with: credential)
     }
     
-    private func updateUserProfile(displayName: String?, photoUrl: URL?) async throws -> User? {
+    private func updateUserProfile(displayName: String?, firstName: String?, lastName: String?, photoUrl: URL?) async throws -> User? {
         let request = Auth.auth().currentUser?.createProfileChangeRequest()
         
         var didMakeChanges: Bool = false
         if let displayName {
             request?.displayName = displayName
             didMakeChanges = true
+        }
+        
+        if let firstName {
+            UserDefaults.auth.firstName = firstName
+        }
+        
+        if let lastName {
+            UserDefaults.auth.lastName = lastName
         }
         
         if let photoUrl {
@@ -159,3 +177,30 @@ final class FirebaseAuthProvider: AuthProvider {
 
 }
 
+extension UserDefaults {
+    
+    static let auth = UserDefaults(suiteName: "auth_defaults")!
+    
+    func reset() {
+        firstName = nil
+        lastName = nil
+    }
+    
+    var firstName: String? {
+        get {
+            self.value(forKey: "first_name") as? String
+        }
+        set {
+            self.setValue(newValue, forKey: "first_name")
+        }
+    }
+    
+    var lastName: String? {
+        get {
+            self.value(forKey: "last_name") as? String
+        }
+        set {
+            self.setValue(newValue, forKey: "last_name")
+        }
+    }
+}
