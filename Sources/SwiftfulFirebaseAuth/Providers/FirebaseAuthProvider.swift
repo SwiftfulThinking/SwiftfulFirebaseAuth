@@ -48,7 +48,7 @@ struct FirebaseAuthProvider: AuthProvider {
             
             // Sign in to Firebase
             let authDataResult = try await signIn(credential: credential)
-
+            
             var firebaserUser = authDataResult.user
             
             // Determines if this is the first time this user is being authenticated
@@ -93,7 +93,7 @@ struct FirebaseAuthProvider: AuthProvider {
         
         // Determines if this is the first time this user is being authenticated
         let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
-
+        
         if isNewUser {
             // Update Firebase user profile with info from Google account
             if let updatedUser = try await updateUserProfile(
@@ -110,6 +110,41 @@ struct FirebaseAuthProvider: AuthProvider {
         let user = UserAuthInfo(user: firebaserUser)
         
         return (user, isNewUser)
+    }
+    
+    @MainActor
+    func authenticateUser_PhoneNumber(phoneNumber: String, verificationCode: String? = nil) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        let helper = SignInWithPhoneHelper()
+        
+        // Authenticate with phone number
+        for try await phoneResponse in helper.startPhoneAuthFlow(phoneNumber: phoneNumber) {
+            switch phoneResponse.status {
+            case .sendingCode:
+                break
+            case .codeSent:
+                let verificationID = phoneResponse.verificationID
+                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
+                break
+            case .error(let error):
+                throw error
+            }
+        }
+        
+        // If verification code is provided, proceed with authentication
+        if let code = verificationCode {
+            guard let verificationID = UserDefaults.standard.string(forKey: "authVerificationID") else {
+                throw AuthError.verificationIDNotFound
+            }
+            
+            let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: code)
+            let authDataResult = try await signIn(credential: credential)
+            let firebaseUser = authDataResult.user
+            let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
+            
+            return (UserAuthInfo(user: firebaseUser), isNewUser)
+        }
+        
+        throw AuthError.noResponse
     }
     
     func signOut() throws {
@@ -164,6 +199,8 @@ struct FirebaseAuthProvider: AuthProvider {
     private enum AuthError: LocalizedError {
         case noResponse
         case userNotFound
+        case verificationCodeNotFound
+        case verificationIDNotFound
         
         var errorDescription: String? {
             switch self {
@@ -171,10 +208,14 @@ struct FirebaseAuthProvider: AuthProvider {
                 return "Bad response."
             case .userNotFound:
                 return "Current user not found."
+            case .verificationCodeNotFound:
+                return "Verification code not found."
+            case .verificationIDNotFound:
+                return "Verification ID not found."
             }
         }
     }
-
+    
 }
 
 extension UserDefaults {

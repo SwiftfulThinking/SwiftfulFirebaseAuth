@@ -13,6 +13,7 @@ public protocol AuthProvider {
     func authenticationDidChangeStream() -> AsyncStream<UserAuthInfo?>
     func authenticateUser_Google(GIDClientID: String) async throws -> (user: UserAuthInfo, isNewUser: Bool)
     func authenticateUser_Apple() async throws -> (user: UserAuthInfo, isNewUser: Bool)
+    func authenticateUser_PhoneNumber(phoneNumber: String, verificationCode: String?) async throws -> (user: UserAuthInfo, isNewUser: Bool)
     func signOut() throws
     func deleteAccount() async throws
 }
