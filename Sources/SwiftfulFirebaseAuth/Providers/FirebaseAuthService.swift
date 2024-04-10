@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseAuth
 
-struct FirebaseAuthProvider: AuthProvider {
+struct FirebaseAuthService: AuthService {
     
     func getAuthenticatedUser() -> UserAuthInfo? {
         if let currentUser = Auth.auth().currentUser {

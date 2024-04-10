@@ -7,41 +7,16 @@
 
 import Foundation
 
-public struct AuthInfo {
-    public let profile: UserAuthInfo?
-    
-    public var userId: String? {
-        profile?.uid
-    }
-    
-    public var isSignedIn: Bool {
-        profile != nil
-    }
-}
-
-public enum Configuration {
-    case mock, firebase
-    
-    var provider: AuthProvider {
-        switch self {
-        case .firebase:
-            return FirebaseAuthProvider()
-        case .mock:
-            return MockAuthProvider()
-        }
-    }
-}
-
 @MainActor
 public final class AuthManager {
     
-    private let provider: AuthProvider
+    private let provider: AuthService
     
     @Published public private(set) var currentUser: AuthInfo
     private var task: Task<Void, Never>? = nil
     
-    public init(configuration: Configuration) {
-        self.provider = configuration.provider
+    public init(config: AuthServiceOption) {
+        self.provider = config.service
         self.currentUser = AuthInfo(profile: provider.getAuthenticatedUser())
         self.streamSignInChangesIfNeeded()
     }

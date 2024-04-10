@@ -1,21 +1,12 @@
 //
-//  AuthProvider.swift
+//  UserAuthInfo.swift
 //  
 //
-//  Created by Nick Sarno on 10/25/23.
+//  Created by Nick Sarno on 4/10/24.
 //
 
 import Foundation
 import FirebaseAuth
-
-public protocol AuthProvider {
-    func getAuthenticatedUser() -> UserAuthInfo?
-    func authenticationDidChangeStream() -> AsyncStream<UserAuthInfo?>
-    func authenticateUser_Google(GIDClientID: String) async throws -> (user: UserAuthInfo, isNewUser: Bool)
-    func authenticateUser_Apple() async throws -> (user: UserAuthInfo, isNewUser: Bool)
-    func signOut() throws
-    func deleteAccount() async throws
-}
 
 public struct UserAuthInfo: Codable {
     public let uid: String
@@ -82,6 +73,20 @@ public struct UserAuthInfo: Codable {
         case photoURL = "photo_url"
         case creationDate = "creation_date"
         case lastSignInDate = "last_sign_in_date"
+    }
+    
+    static var mock: UserAuthInfo {
+        UserAuthInfo(
+            uid: "mock123",
+            email: "hello@gmail.com",
+            isAnonymous: false,
+            authProviders: [.apple],
+            displayName: "Mock User",
+            phoneNumber: nil,
+            photoURL: nil,
+            creationDate: Date(),
+            lastSignInDate: Date()
+        )
     }
 }
 
