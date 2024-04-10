@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 public struct AuthManagerEnvironmentKey: EnvironmentKey {
+    // FIX ME
     @MainActor
     public static let defaultValue: AuthManager = AuthManager(config: .mock(.startFromSavedState))
 }

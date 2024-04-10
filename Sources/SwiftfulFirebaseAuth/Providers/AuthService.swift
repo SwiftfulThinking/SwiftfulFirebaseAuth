@@ -17,7 +17,7 @@ public protocol AuthService: Sendable {
     func deleteAccount() async throws
 }
 
-public enum AuthServiceOption: Equatable {
+public enum AuthServiceOption: Equatable, Sendable {
     case mock(_ option: MockUserServiceOption), firebase
     
     var service: AuthService {
@@ -30,7 +30,7 @@ public enum AuthServiceOption: Equatable {
     }
     
     
-    public enum MockUserServiceOption: Equatable {
+    public enum MockUserServiceOption: Equatable, Sendable {
         case startFromSavedState, startSignedIn, startSignedOut
     }
 }

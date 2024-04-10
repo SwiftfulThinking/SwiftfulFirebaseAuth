@@ -11,8 +11,7 @@ import Combine
 @MainActor class MockAuthDatabase {
     static let instance = MockAuthDatabase()
 
-    //@FileManagerCodable("mock_user_profile") // TODO - FIX ME AND SAVE?
-    private(set) var currentUser: UserAuthInfo?
+    @AuthFileManagerCodable("mock_user_profile") private(set) var currentUser: UserAuthInfo?
     
     @discardableResult
     func signIn() -> (user: UserAuthInfo, isNewUser: Bool) {
