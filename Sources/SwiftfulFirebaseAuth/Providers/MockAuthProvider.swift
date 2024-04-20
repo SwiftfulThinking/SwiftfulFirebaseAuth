@@ -55,17 +55,13 @@ final class MockAuthProvider: AuthProvider {
         return signInMockUser()
     }
     
-    func authenticateUser_PhoneNumber(phoneNumber: String, verificationCode: String?) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
-        // Check if verification code is provided
-        if let code = verificationCode {
-            // If verification code is provided, proceed with authentication
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-            return signInMockUser()
-        } else {
-            // If verification code is not provided, return a default user info and mark as not new user
-            let defaultUser = UserAuthInfo(uid: "", isAnonymous: true)
-            return (defaultUser, false)
-        }
+    func authenticateUser_PhoneNumber_Start(phoneNumber: String) async throws {
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+    }
+    
+    func authenticateUser_PhoneNumber_Verify(code: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        return signInMockUser()
     }
     
     private func signInMockUser() -> (user: UserAuthInfo, isNewUser: Bool) {

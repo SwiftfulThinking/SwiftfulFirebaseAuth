@@ -8,21 +8,8 @@
 import FirebaseAuth
 
 public struct SignInWithPhoneResult {
-    public let verificationID: String?
-    public let status: PhoneAuthStatus
-    
-    public init(verificationID: String? = nil, status: PhoneAuthStatus) {
-        self.verificationID = verificationID
-        self.status = status
-    }
+    public let verificationID: String
 }
-
-public enum PhoneAuthStatus {
-    case codeSent
-    case sendingCode
-    case error(Error)
-}
-
 
 /// A helper class that provides methods for phone authentication.
 final class SignInWithPhoneHelper {
@@ -57,7 +44,7 @@ final class SignInWithPhoneHelper {
     
     func startPhoneFlow(phoneNumber: String) async throws -> SignInWithPhoneResult {
         let verificationID = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil)
-        return SignInWithPhoneResult(verificationID: verificationID, status: .codeSent)
+        return SignInWithPhoneResult(verificationID: verificationID)
     }
 
 }
