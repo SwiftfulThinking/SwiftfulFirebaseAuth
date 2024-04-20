@@ -6,45 +6,34 @@
 //
 
 import FirebaseAuth
+import UIKit
 
 public struct SignInWithPhoneResult {
     public let verificationID: String
 }
 
 /// A helper class that provides methods for phone authentication.
-final class SignInWithPhoneHelper {
+@MainActor
+final class SignInWithPhoneHelper: NSObject {
     
-    /// Starts the phone authentication flow.
-    /// - Parameter phoneNumber: The phone number to verify.
-    /// - Returns: An `AsyncThrowingStream` that yields `SignInWithPhoneResult` instances and throws `Error` instances.
-//    @MainActor
-//    func startPhoneAuthFlow(phoneNumber: String) -> AsyncThrowingStream<SignInWithPhoneResult, Error> {
-//        AsyncThrowingStream { continuation in
-//            // Indicate that the code is being sent
-//            continuation.yield(SignInWithPhoneResult(status: .sendingCode))
-//            
-//            PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
-//                if let error {
-//                    // Indicate that there was an error
-//                    continuation.yield(SignInWithPhoneResult(status: .error(error)))
-//                    continuation.finish()
-//                    return
-//                }
-//                
-//                if let verificationID {
-//                    // Indicate that the code has been sent
-//                    let result = SignInWithPhoneResult(verificationID: verificationID, status: .codeSent)
-//                    continuation.yield(result)
-//                    continuation.finish()
-//                    return
-//                }
-//            }
-//        }
-//    }
+    private var presentedViewController: UIViewController? = nil
     
     func startPhoneFlow(phoneNumber: String) async throws -> SignInWithPhoneResult {
-        let verificationID = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil)
+        let verificationID = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: self)
         return SignInWithPhoneResult(verificationID: verificationID)
     }
 
+}
+
+extension SignInWithPhoneHelper: AuthUIDelegate {
+
+    func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        viewControllerToPresent.modalPresentationStyle = .fullScreen
+        viewControllerToPresent.present(viewControllerToPresent, animated: flag, completion: completion)
+        presentedViewController = viewControllerToPresent
+    }
+
+    func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        presentedViewController?.dismiss(animated: flag, completion: completion)
+    }
 }

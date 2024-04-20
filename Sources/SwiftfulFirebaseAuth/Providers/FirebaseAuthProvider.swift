@@ -143,38 +143,6 @@ struct FirebaseAuthProvider: AuthProvider {
         let user = UserAuthInfo(user: firebaserUser)
         
         return (user, isNewUser)
-
-        
-        // Authenticate with phone number
-//        for try await phoneResponse in helper.startPhoneAuthFlow(phoneNumber: phoneNumber) {
-//            switch phoneResponse.status {
-//            case .sendingCode:
-//                break
-//            case .codeSent:
-//                let verificationID = phoneResponse.verificationID
-//                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
-//                break
-//            case .error(let error):
-//                throw error
-//            }
-//        }
-        
-        
-        // If verification code is provided, proceed with authentication
-//        if let code = verificationCode {
-//            guard let verificationID = UserDefaults.standard.string(forKey: "authVerificationID") else {
-//                throw AuthError.verificationIDNotFound
-//            }
-//            
-//            let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: code)
-//            let authDataResult = try await signIn(credential: credential)
-//            let firebaseUser = authDataResult.user
-//            let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
-//            
-//            return (UserAuthInfo(user: firebaseUser), isNewUser)
-//        }
-//        print("END")
-//        throw AuthError.noResponse
     }
     
     func signOut() throws {
