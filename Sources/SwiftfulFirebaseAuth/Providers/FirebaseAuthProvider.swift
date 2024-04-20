@@ -48,7 +48,7 @@ struct FirebaseAuthProvider: AuthProvider {
             
             // Sign in to Firebase
             let authDataResult = try await signIn(credential: credential)
-
+            
             var firebaserUser = authDataResult.user
             
             // Determines if this is the first time this user is being authenticated
@@ -93,7 +93,7 @@ struct FirebaseAuthProvider: AuthProvider {
         
         // Determines if this is the first time this user is being authenticated
         let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
-
+        
         if isNewUser {
             // Update Firebase user profile with info from Google account
             if let updatedUser = try await updateUserProfile(
@@ -106,6 +106,39 @@ struct FirebaseAuthProvider: AuthProvider {
             }
         }
         
+        // Convert to generic type
+        let user = UserAuthInfo(user: firebaserUser)
+        
+        return (user, isNewUser)
+    }
+    
+    @MainActor
+    func authenticateUser_PhoneNumber_Start(phoneNumber: String) async throws {
+        let helper = SignInWithPhoneHelper()
+        
+        // Send code to phone number
+        let result = try await helper.startPhoneFlow(phoneNumber: phoneNumber)
+        
+        UserDefaults.auth.phoneVerificationID = result.verificationID
+    }
+    
+    @MainActor
+    func authenticateUser_PhoneNumber_Verify(code: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        guard let verificationId = UserDefaults.auth.phoneVerificationID else {
+            throw AuthError.verificationIDNotFound
+        }
+        
+        // Convert phone auth to Firebase credential
+        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationId, verificationCode: code)
+        
+        // Sign in to Firebase
+        let authDataResult = try await signIn(credential: credential)
+
+        let firebaserUser = authDataResult.user
+        
+        // Determines if this is the first time this user is being authenticated
+        let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
+
         // Convert to generic type
         let user = UserAuthInfo(user: firebaserUser)
         
@@ -164,6 +197,8 @@ struct FirebaseAuthProvider: AuthProvider {
     private enum AuthError: LocalizedError {
         case noResponse
         case userNotFound
+        case verificationCodeNotFound
+        case verificationIDNotFound
         
         var errorDescription: String? {
             switch self {
@@ -171,10 +206,14 @@ struct FirebaseAuthProvider: AuthProvider {
                 return "Bad response."
             case .userNotFound:
                 return "Current user not found."
+            case .verificationCodeNotFound:
+                return "Verification code not found."
+            case .verificationIDNotFound:
+                return "Verification ID not found."
             }
         }
     }
-
+    
 }
 
 extension UserDefaults {
@@ -184,6 +223,7 @@ extension UserDefaults {
     func reset() {
         firstName = nil
         lastName = nil
+        phoneVerificationID = nil
     }
     
     var firstName: String? {
@@ -203,4 +243,14 @@ extension UserDefaults {
             self.setValue(newValue, forKey: "last_name")
         }
     }
+    
+    var phoneVerificationID: String? {
+        get {
+            self.value(forKey: "phone_verification_id") as? String
+        }
+        set {
+            self.setValue(newValue, forKey: "phone_verification_id")
+        }
+    }
+    
 }

@@ -49,8 +49,17 @@ final class MockAuthProvider: AuthProvider {
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         return signInMockUser()
     }
-        
+    
     func authenticateUser_Apple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        return signInMockUser()
+    }
+    
+    func authenticateUser_PhoneNumber_Start(phoneNumber: String) async throws {
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+    }
+    
+    func authenticateUser_PhoneNumber_Verify(code: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         return signInMockUser()
     }

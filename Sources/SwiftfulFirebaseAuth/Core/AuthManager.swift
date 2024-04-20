@@ -99,6 +99,21 @@ public final class AuthManager {
         return value
     }
     
+    public func signInPhone_Start(phoneNumber: String) async throws {
+        try await provider.authenticateUser_PhoneNumber_Start(phoneNumber: phoneNumber)
+    }
+    
+    public func signInPhone_Verify(code: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        let value = try await provider.authenticateUser_PhoneNumber_Verify(code: code)
+        currentUser = AuthInfo(profile: value.user)
+
+        defer {
+            streamSignInChangesIfNeeded()
+        }
+        
+        return value
+    }
+    
     public func signOut() throws {
         try provider.signOut()
         clearLocalData()
