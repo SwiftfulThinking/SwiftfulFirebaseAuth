@@ -19,8 +19,8 @@ final class SignInWithPhoneHelper: NSObject {
     private var presentedViewController: UIViewController? = nil
     private var topViewController: UIViewController? = nil
 
-    func startPhoneFlow(phoneNumber: String) async throws -> SignInWithPhoneResult {
-        guard let topVC = UIApplication.topViewController() else {
+    func startPhoneFlow(phoneNumber: String, viewController: UIViewController? = nil) async throws -> SignInWithPhoneResult {
+        guard let topVC = viewController ?? UIApplication.topViewController() else {
             throw PhoneSignInError.noViewController
         }
         topViewController = topVC
