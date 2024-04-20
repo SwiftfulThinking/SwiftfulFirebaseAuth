@@ -17,10 +17,16 @@ public struct SignInWithPhoneResult {
 final class SignInWithPhoneHelper: NSObject {
     
     private var presentedViewController: UIViewController? = nil
-//    private var completionHandler: ((Result<SignInWithPhoneResult, Error>) -> Void)? = nil
+    private var topViewController: UIViewController? = nil
 
     func startPhoneFlow(phoneNumber: String) async throws -> SignInWithPhoneResult {
+        guard let topVC = UIApplication.topViewController() else {
+            throw PhoneSignInError.noViewController
+        }
+        topViewController = topVC
+        
         let verificationID = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: self)
+
         return SignInWithPhoneResult(verificationID: verificationID)
     }
 
@@ -29,10 +35,8 @@ final class SignInWithPhoneHelper: NSObject {
 extension SignInWithPhoneHelper: AuthUIDelegate {
 
     func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        guard let topViewController = UIApplication.topViewController() else {
-            return
-//            throw PhoneSignInError.noViewController
-        }
+        // Should never fail, since already set in startPhoneFlow
+        guard let topViewController else { return }
 
         viewControllerToPresent.modalPresentationStyle = .overFullScreen
         topViewController.present(viewControllerToPresent, animated: flag, completion: completion)
