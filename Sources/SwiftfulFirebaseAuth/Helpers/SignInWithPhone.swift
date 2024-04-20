@@ -28,7 +28,7 @@ final class SignInWithPhoneHelper: NSObject {
 extension SignInWithPhoneHelper: AuthUIDelegate {
 
     func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        viewControllerToPresent.modalPresentationStyle = .fullScreen
+        viewControllerToPresent.modalPresentationStyle = .overFullScreen
         viewControllerToPresent.present(viewControllerToPresent, animated: flag, completion: completion)
         presentedViewController = viewControllerToPresent
     }
