@@ -6,51 +6,57 @@
 //
 
 import FirebaseAuth
+import UIKit
 
 public struct SignInWithPhoneResult {
-    public let verificationID: String?
-    public let status: PhoneAuthStatus
-    
-    public init(verificationID: String? = nil, status: PhoneAuthStatus) {
-        self.verificationID = verificationID
-        self.status = status
-    }
+    public let verificationID: String
 }
-
-public enum PhoneAuthStatus {
-    case codeSent
-    case sendingCode
-    case error(Error)
-}
-
 
 /// A helper class that provides methods for phone authentication.
-final class SignInWithPhoneHelper {
+@MainActor
+final class SignInWithPhoneHelper: NSObject {
     
-    /// Starts the phone authentication flow.
-    /// - Parameter phoneNumber: The phone number to verify.
-    /// - Returns: An `AsyncThrowingStream` that yields `SignInWithPhoneResult` instances and throws `Error` instances.
-    @MainActor
-    func startPhoneAuthFlow(phoneNumber: String) -> AsyncThrowingStream<SignInWithPhoneResult, Error> {
-        AsyncThrowingStream { continuation in
-            // Indicate that the code is being sent
-            continuation.yield(SignInWithPhoneResult(status: .sendingCode))
-            
-            PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
-                if let error {
-                    // Indicate that there was an error
-                    continuation.yield(SignInWithPhoneResult(status: .error(error)))
-                    continuation.finish()
-                    return
-                }
-                
-                if let verificationID {
-                    // Indicate that the code has been sent
-                    let result = SignInWithPhoneResult(verificationID: verificationID, status: .codeSent)
-                    continuation.yield(result)
-                    continuation.finish()
-                    return
-                }
+    private var presentedViewController: UIViewController? = nil
+    private var topViewController: UIViewController? = nil
+
+    func startPhoneFlow(phoneNumber: String, viewController: UIViewController? = nil) async throws -> SignInWithPhoneResult {
+        guard let topVC = viewController ?? UIApplication.topViewController() else {
+            throw PhoneSignInError.noViewController
+        }
+        topViewController = topVC
+        
+        let verificationID = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: self)
+
+        return SignInWithPhoneResult(verificationID: verificationID)
+    }
+
+}
+
+extension SignInWithPhoneHelper: AuthUIDelegate {
+
+    func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        // Should never fail, since already set in startPhoneFlow
+        guard let topViewController else { return }
+
+        viewControllerToPresent.modalPresentationStyle = .overFullScreen
+        topViewController.present(viewControllerToPresent, animated: flag, completion: completion)
+        presentedViewController = viewControllerToPresent
+    }
+
+    func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        presentedViewController?.dismiss(animated: flag, completion: completion)
+    }
+    
+    private enum PhoneSignInError: LocalizedError {
+        case noViewController
+        case badResponse
+        
+        var errorDescription: String? {
+            switch self {
+            case .noViewController:
+                return "Could not find top view controller."
+            case .badResponse:
+                return "Phone Sign In had a bad response."
             }
         }
     }

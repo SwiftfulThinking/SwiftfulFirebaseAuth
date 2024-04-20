@@ -113,38 +113,36 @@ struct FirebaseAuthProvider: AuthProvider {
     }
     
     @MainActor
-    func authenticateUser_PhoneNumber(phoneNumber: String, verificationCode: String? = nil) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+    func authenticateUser_PhoneNumber_Start(phoneNumber: String) async throws {
         let helper = SignInWithPhoneHelper()
         
-        // Authenticate with phone number
-        for try await phoneResponse in helper.startPhoneAuthFlow(phoneNumber: phoneNumber) {
-            switch phoneResponse.status {
-            case .sendingCode:
-                break
-            case .codeSent:
-                let verificationID = phoneResponse.verificationID
-                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
-                break
-            case .error(let error):
-                throw error
-            }
+        // Send code to phone number
+        let result = try await helper.startPhoneFlow(phoneNumber: phoneNumber)
+        
+        UserDefaults.auth.phoneVerificationID = result.verificationID
+    }
+    
+    @MainActor
+    func authenticateUser_PhoneNumber_Verify(code: String) async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        guard let verificationId = UserDefaults.auth.phoneVerificationID else {
+            throw AuthError.verificationIDNotFound
         }
         
-        // If verification code is provided, proceed with authentication
-        if let code = verificationCode {
-            guard let verificationID = UserDefaults.standard.string(forKey: "authVerificationID") else {
-                throw AuthError.verificationIDNotFound
-            }
-            
-            let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: code)
-            let authDataResult = try await signIn(credential: credential)
-            let firebaseUser = authDataResult.user
-            let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
-            
-            return (UserAuthInfo(user: firebaseUser), isNewUser)
-        }
+        // Convert phone auth to Firebase credential
+        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationId, verificationCode: code)
         
-        throw AuthError.noResponse
+        // Sign in to Firebase
+        let authDataResult = try await signIn(credential: credential)
+
+        let firebaserUser = authDataResult.user
+        
+        // Determines if this is the first time this user is being authenticated
+        let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
+
+        // Convert to generic type
+        let user = UserAuthInfo(user: firebaserUser)
+        
+        return (user, isNewUser)
     }
     
     func signOut() throws {
@@ -225,6 +223,7 @@ extension UserDefaults {
     func reset() {
         firstName = nil
         lastName = nil
+        phoneVerificationID = nil
     }
     
     var firstName: String? {
@@ -244,4 +243,14 @@ extension UserDefaults {
             self.setValue(newValue, forKey: "last_name")
         }
     }
+    
+    var phoneVerificationID: String? {
+        get {
+            self.value(forKey: "phone_verification_id") as? String
+        }
+        set {
+            self.setValue(newValue, forKey: "phone_verification_id")
+        }
+    }
+    
 }
