@@ -17,7 +17,8 @@ public struct SignInWithPhoneResult {
 final class SignInWithPhoneHelper: NSObject {
     
     private var presentedViewController: UIViewController? = nil
-    
+//    private var completionHandler: ((Result<SignInWithPhoneResult, Error>) -> Void)? = nil
+
     func startPhoneFlow(phoneNumber: String) async throws -> SignInWithPhoneResult {
         let verificationID = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: self)
         return SignInWithPhoneResult(verificationID: verificationID)
@@ -28,12 +29,31 @@ final class SignInWithPhoneHelper: NSObject {
 extension SignInWithPhoneHelper: AuthUIDelegate {
 
     func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        guard let topViewController = UIApplication.topViewController() else {
+            return
+//            throw PhoneSignInError.noViewController
+        }
+
         viewControllerToPresent.modalPresentationStyle = .overFullScreen
-        viewControllerToPresent.present(viewControllerToPresent, animated: flag, completion: completion)
+        topViewController.present(viewControllerToPresent, animated: flag, completion: completion)
         presentedViewController = viewControllerToPresent
     }
 
     func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
         presentedViewController?.dismiss(animated: flag, completion: completion)
+    }
+    
+    private enum PhoneSignInError: LocalizedError {
+        case noViewController
+        case badResponse
+        
+        var errorDescription: String? {
+            switch self {
+            case .noViewController:
+                return "Could not find top view controller."
+            case .badResponse:
+                return "Phone Sign In had a bad response."
+            }
+        }
     }
 }
