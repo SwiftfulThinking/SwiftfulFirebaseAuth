@@ -145,7 +145,29 @@ Firebase docs: https://firebase.google.com/docs/auth/ios/phone-auth
 * Firebase Console -> Project Settings -> Encoded App ID
 * Xcode Project Navigator -> Target -> Info -> URL Types -> add Encoded App ID as URL Schemes value
 
-### 5. Get the user's phone number
+### 5. Add UIDelegate methods to handle push notifications
+
+```swift
+func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+     Auth.auth().setAPNSToken(deviceToken, type: .prod)
+}
+
+func application(_ application: UIApplication, didReceiveRemoteNotification notification: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+     if Auth.auth().canHandleNotification(notification) {
+          completionHandler(.noData)
+          return
+     }
+}
+    
+func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
+     if Auth.auth().canHandle(url) {
+          return true
+     }
+     return false
+}
+```
+
+### 6. Get the user's phone number
 * This SDK does NOT format phone numbers or provide UI for this. You must provide a string in the correct format.
 * Phone numbers have to be correctly formatted, such as "+1 650-555-3434" for US numbers.
 * See [Firebase Docs](https://firebase.google.com/docs/auth/ios/phone-auth) for details about phone number implementation
@@ -154,7 +176,7 @@ Firebase docs: https://firebase.google.com/docs/auth/ios/phone-auth
      - https://github.com/iziz/libPhoneNumber-iOS
      - https://github.com/MojtabaHs/iPhoneNumberField
 
-### 6. Add Google Button (optional)
+### 7. Add Google Button (optional)
 
 ```swift
 SignInWithPhoneButtonView(
@@ -165,13 +187,13 @@ SignInWithPhoneButtonView(
 .frame(height: 50)
 ```
 
-### 7. Send verification code to user's phone.
+### 8. Send verification code to user's phone.
 
 ```swift
 try await authManager.signInPhone_Start(phoneNumber: phoneNumber)
 ```
 
-### 8. Verify code and sign in
+### 9. Verify code and sign in
 ```swift
 try await authManager.signInPhone_Verify(code: code)
 ```
