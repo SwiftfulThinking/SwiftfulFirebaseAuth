@@ -79,12 +79,8 @@ Firebase docs: https://firebase.google.com/docs/auth/ios/apple
 
 ### 3. Add Apple Button (optional)
 ```swift
-SignInWithAppleButtonView(
-     type: .signUp,
-     style: .black,
-     cornerRadius: 10
-)
-.frame(height: 50)
+SignInWithAppleButtonView()
+    .frame(height: 50)
 ```
 
 ### 4. Sign in
@@ -115,12 +111,8 @@ Firebase docs: https://firebase.google.com/docs/auth/ios/google-signin
 
 ### 4. Add Google Button (optional)
 ```swift
-SignInWithGoogleButtonView(
-     type: .signUp,
-     style: .black,
-     cornerRadius: 10
-)
-.frame(height: 50)
+SignInWithGoogleButtonView()
+    .frame(height: 50)
 ```
 
 ### 5. Sign in
