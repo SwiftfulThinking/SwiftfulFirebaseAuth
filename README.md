@@ -176,15 +176,11 @@ func application(_ application: UIApplication, open url: URL, options: [UIApplic
      - https://github.com/iziz/libPhoneNumber-iOS
      - https://github.com/MojtabaHs/iPhoneNumberField
 
-### 7. Add Google Button (optional)
+### 7. Add Phone Number Button (optional)
 
 ```swift
-SignInWithPhoneButtonView(
-     type: .signUp,
-     style: .black,
-     cornerRadius: 10
-)
-.frame(height: 50)
+SignInWithPhoneButtonView()
+     .frame(height: 50)
 ```
 
 ### 8. Send verification code to user's phone.
