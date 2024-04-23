@@ -1,26 +1,22 @@
 //
-//  SignInWithGoogleButtonView.swift
+//  SignInWithPhoneButtonView.swift
 //
 //
-//  Created by Nicholas Sarno on 11/6/23.
+//  Created by Nick Sarno on 4/22/24.
 //
 
-import Foundation
+import SwiftUI
 import SwiftUI
 import AuthenticationServices
 
-public extension Color {
-    static let googleRed = Color("GoogleRed", bundle: Bundle.module)
-}
-
-public struct SignInWithGoogleButtonView: View {
+public struct SignInWithPhoneButtonView: View {
     
     private var backgroundColor: Color
     private var foregroundColor: Color
     private var borderColor: Color
     private var buttonText: String
     private var cornerRadius: CGFloat
-        
+    
     public init(
         type: ASAuthorizationAppleIDButton.ButtonType = .signIn,
         style: ASAuthorizationAppleIDButton.Style = .black,
@@ -30,20 +26,6 @@ public struct SignInWithGoogleButtonView: View {
         self.backgroundColor = style.backgroundColor
         self.foregroundColor = style.foregroundColor
         self.borderColor = style.borderColor
-        self.buttonText = type.buttonText
-    }
-    
-    public init(
-        type: ASAuthorizationAppleIDButton.ButtonType = .signIn,
-        backgroundColor: Color = .googleRed,
-        borderColor: Color = .googleRed,
-        foregroundColor: Color = .white,
-        cornerRadius: CGFloat = 10
-    ) {
-        self.cornerRadius = cornerRadius
-        self.backgroundColor = backgroundColor
-        self.borderColor = borderColor
-        self.foregroundColor = foregroundColor
         self.buttonText = type.buttonText
     }
     
@@ -57,12 +39,12 @@ public struct SignInWithGoogleButtonView: View {
                 .padding(0.8)
             
             HStack(spacing: 8) {
-                Image("GoogleIcon", bundle: .module)
+                Image(systemName: "phone.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 16, height: 16)
                 
-                Text("\(buttonText) Google")
+                Text("\(buttonText) Phone")
                     .font(.system(size: 21))
                     .fontWeight(.medium)
             }
@@ -74,7 +56,15 @@ public struct SignInWithGoogleButtonView: View {
 }
 
 #Preview("SignInWithGoogleButtonView") {
-    SignInWithGoogleButtonView(backgroundColor: .googleRed)
-        .frame(height: 60)
-        .padding()
+    VStack {
+        SignInWithAppleButtonView()
+            .frame(height: 60)
+            .padding()
+        SignInWithGoogleButtonView()
+            .frame(height: 60)
+            .padding()
+        SignInWithPhoneButtonView()
+            .frame(height: 60)
+            .padding()
+    }
 }

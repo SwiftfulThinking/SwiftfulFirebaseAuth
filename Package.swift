@@ -30,7 +30,7 @@ let package = Package(
                 .product(name: "GoogleSignInSwift", package: "GoogleSignIn-iOS")
             ],
             resources: [
-                .process("Assets")
+                .process("Support/Assets")
             ]
         ),
         .testTarget(

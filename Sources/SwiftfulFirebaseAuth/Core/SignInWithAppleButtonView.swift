@@ -63,12 +63,6 @@ private struct SignInWithAppleButtonViewRepresentable: UIViewRepresentable {
                 style: .white, cornerRadius: 30)
                 .frame(height: 50)
                 .background(Color.red)
-
-            SignInWithGoogleButtonView(
-                type: .signIn,
-                style: .white, cornerRadius: 30)
-                .frame(height: 50)
-                .background(Color.red)
         }
         .padding(40)
     }
