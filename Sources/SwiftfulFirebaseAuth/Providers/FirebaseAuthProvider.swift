@@ -6,12 +6,23 @@
 //
 
 import Foundation
+import Firebase
 import FirebaseAuth
 
 struct FirebaseAuthProvider: AuthProvider {
     
+    private var auth: Auth
+    
+    init() {
+        self.auth = Auth.auth()
+    }
+    
+    init(firebaseAuth: Auth) {
+        self.auth = firebaseAuth
+    }
+    
     func getAuthenticatedUser() -> UserAuthInfo? {
-        if let currentUser = Auth.auth().currentUser {
+        if let currentUser = auth.currentUser {
             return UserAuthInfo(user: currentUser)
         } else {
             return nil
@@ -21,7 +32,7 @@ struct FirebaseAuthProvider: AuthProvider {
     @MainActor
     func authenticationDidChangeStream() -> AsyncStream<UserAuthInfo?> {
         AsyncStream { continuation in
-            Auth.auth().addStateDidChangeListener { _, currentUser in
+            auth.addStateDidChangeListener { _, currentUser in
                 if let currentUser {
                     let user = UserAuthInfo(user: currentUser)
                     continuation.yield(user)
@@ -36,7 +47,7 @@ struct FirebaseAuthProvider: AuthProvider {
     func authenticateUser_Anonymously() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         
         // Sign in to Firebase
-        let authDataResult = try await Auth.auth().signInAnonymously()
+        let authDataResult = try await auth.signInAnonymously()
         
         // Determines if this is the first time this user is being authenticated
         let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
@@ -161,11 +172,11 @@ struct FirebaseAuthProvider: AuthProvider {
     }
     
     func signOut() throws {
-        try Auth.auth().signOut()
+        try auth.signOut()
     }
     
     func deleteAccount() async throws {
-        guard let user = Auth.auth().currentUser else {
+        guard let user = auth.currentUser else {
             throw AuthError.userNotFound
         }
         
@@ -177,15 +188,15 @@ struct FirebaseAuthProvider: AuthProvider {
     
     private func signInOrLink(credential: AuthCredential) async throws -> AuthDataResult {
         // If user is anonymous, attempt to link credential to existing account. On failure, fall-back to signIn to create a new account.
-        if let user = Auth.auth().currentUser, user.isAnonymous, let result = try? await user.link(with: credential) {
+        if let user = auth.currentUser, user.isAnonymous, let result = try? await user.link(with: credential) {
             return result
         }
         
-        return try await Auth.auth().signIn(with: credential)
+        return try await auth.signIn(with: credential)
     }
     
     private func updateUserProfile(displayName: String?, firstName: String?, lastName: String?, photoUrl: URL?) async throws -> User? {
-        let request = Auth.auth().currentUser?.createProfileChangeRequest()
+        let request = auth.currentUser?.createProfileChangeRequest()
         
         var didMakeChanges: Bool = false
         if let displayName {
@@ -210,7 +221,7 @@ struct FirebaseAuthProvider: AuthProvider {
             try await request?.commitChanges()
         }
         
-        return Auth.auth().currentUser
+        return auth.currentUser
     }
     
     

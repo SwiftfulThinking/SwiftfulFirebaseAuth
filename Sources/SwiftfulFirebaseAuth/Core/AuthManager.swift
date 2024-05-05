@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 public struct AuthInfo {
     public let profile: UserAuthInfo?
@@ -24,14 +25,18 @@ public enum MockAuthConfiguration {
 }
 
 public enum Configuration {
-    case mock(_ configuration: MockAuthConfiguration), firebase
+    case mock(_ configuration: MockAuthConfiguration)
+    case firebase
+    case firebaseAuth(auth: Auth)
     
     var provider: AuthProvider {
         switch self {
-        case .firebase:
-            return FirebaseAuthProvider()
         case .mock(let configuration):
             return MockAuthProvider(configuration: configuration)
+        case .firebase:
+            return FirebaseAuthProvider()
+        case .firebaseAuth(let auth):
+            return FirebaseAuthProvider(firebaseAuth: auth)
         }
     }
 }
