@@ -33,6 +33,21 @@ struct FirebaseAuthProvider: AuthProvider {
     }
     
     @MainActor
+    func authenticateUser_Anonymously() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        
+        // Sign in to Firebase
+        let authDataResult = try await auth.signInAnonymously()
+        
+        // Determines if this is the first time this user is being authenticated
+        let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
+        
+        // Convert to generic type
+        let user = UserAuthInfo(user: authDataResult.user)
+            
+        return (user, isNewUser)
+    }
+    
+    @MainActor
     func authenticateUser_Apple() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         let helper = SignInWithAppleHelper()
         
