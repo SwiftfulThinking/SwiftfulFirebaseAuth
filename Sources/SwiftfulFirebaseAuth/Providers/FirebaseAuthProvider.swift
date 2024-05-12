@@ -62,7 +62,7 @@ struct FirebaseAuthProvider: AuthProvider {
             )
             
             // Sign in to Firebase
-            let authDataResult = try await signIn(credential: credential)
+            let authDataResult = try await signInOrLink(credential: credential)
             
             var firebaserUser = authDataResult.user
             
@@ -102,7 +102,7 @@ struct FirebaseAuthProvider: AuthProvider {
         let credential = GoogleAuthProvider.credential(withIDToken: googleResponse.idToken, accessToken: googleResponse.accessToken)
         
         // Sign in to Firebase
-        let authDataResult = try await signIn(credential: credential)
+        let authDataResult = try await signInOrLink(credential: credential)
         
         var firebaserUser = authDataResult.user
         
@@ -147,7 +147,7 @@ struct FirebaseAuthProvider: AuthProvider {
         let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationId, verificationCode: code)
         
         // Sign in to Firebase
-        let authDataResult = try await signIn(credential: credential)
+        let authDataResult = try await signInOrLink(credential: credential)
 
         let firebaserUser = authDataResult.user
         
@@ -175,8 +175,13 @@ struct FirebaseAuthProvider: AuthProvider {
     // MARK: PRIVATE
     
     
-    private func signIn(credential: AuthCredential) async throws -> AuthDataResult {
-        try await Auth.auth().signIn(with: credential)
+    private func signInOrLink(credential: AuthCredential) async throws -> AuthDataResult {
+        // If user is anonymous, attempt to link credential to existing account. On failure, fall-back to signIn to create a new account.
+        if let user = Auth.auth().currentUser, user.isAnonymous, let result = try? await user.link(with: credential) {
+            return result
+        }
+        
+        return try await Auth.auth().signIn(with: credential)
     }
     
     private func updateUserProfile(displayName: String?, firstName: String?, lastName: String?, photoUrl: URL?) async throws -> User? {
