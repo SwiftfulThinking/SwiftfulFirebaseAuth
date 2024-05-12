@@ -117,7 +117,7 @@ SignInWithGoogleButtonView()
 
 ### 5. Sign in
 ```swift
-let clientId = FirebaseApp.app()?.options.clientId
+let clientId = FirebaseApp.app()?.options.clientID
 try await authManager.signInGoogle(GIDClientID: clientId)
 ```
 
