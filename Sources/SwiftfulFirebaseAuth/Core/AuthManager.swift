@@ -99,6 +99,17 @@ public final class AuthManager {
         return value
     }
     
+    public func signInAnonymously() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
+        let value = try await provider.authenticateUser_Anonymously()
+        currentUser = AuthInfo(profile: value.user)
+        
+        defer {
+            streamSignInChangesIfNeeded()
+        }
+        
+        return value
+    }
+    
     public func signInPhone_Start(phoneNumber: String) async throws {
         try await provider.authenticateUser_PhoneNumber_Start(phoneNumber: phoneNumber)
     }
