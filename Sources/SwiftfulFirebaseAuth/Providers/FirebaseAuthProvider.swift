@@ -36,7 +36,7 @@ struct FirebaseAuthProvider: AuthProvider {
     func authenticateUser_Anonymously() async throws -> (user: UserAuthInfo, isNewUser: Bool) {
         
         // Sign in to Firebase
-        let authDataResult = try await auth.signInAnonymously()
+        let authDataResult = try await Auth.auth().signInAnonymously()
         
         // Determines if this is the first time this user is being authenticated
         let isNewUser = authDataResult.additionalUserInfo?.isNewUser ?? true
