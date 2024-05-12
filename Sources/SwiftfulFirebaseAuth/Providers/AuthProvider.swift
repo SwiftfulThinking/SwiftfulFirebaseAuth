@@ -89,7 +89,7 @@ public struct UserAuthInfo: Codable {
 }
 
 public enum AuthProviderOption: String, Codable {
-    case anonymously = "anonymously"
+    case anonymous = "anonymous"
     case google = "google.com"
     case apple = "apple.com"
     case email = "password"
