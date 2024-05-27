@@ -45,8 +45,19 @@ import SwiftfulFirebaseAuth
 let authManager = AuthManager(configuration: .firebase)
 
 // Use Mock configuration to avoid running Firebase while developing (ex. for SwiftUI Previews).
-let authManager = AuthManager(configuration: .mock)
+let authManager = AuthManager(configuration: .mock(.signInAndOut))
+
+// Use Mock configurations to override settings for Previews.
+// .signInAndOut (default behavior)
+// .signedIn (starts signed in)
+// .signedOut (user starts signed out)
+#Preview {
+    MyView()
+            .environment(\.authManager, AuthManager(configuration: .mock(.signedIn)))
+}
 ```
+
+
 
 ### 4. Configure your Firebase project.
 Add the Firebase SDK to your application and configure() the SDK on launch.
