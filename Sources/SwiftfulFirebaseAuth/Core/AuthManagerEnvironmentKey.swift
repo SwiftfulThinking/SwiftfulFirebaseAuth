@@ -10,7 +10,7 @@ import SwiftUI
 
 public struct AuthManagerEnvironmentKey: EnvironmentKey {
     @MainActor
-    public static let defaultValue: AuthManager = AuthManager(configuration: .mock)
+    public static let defaultValue: AuthManager = AuthManager(configuration: .mock(.signInAndOut))
 }
 
 public extension EnvironmentValues {

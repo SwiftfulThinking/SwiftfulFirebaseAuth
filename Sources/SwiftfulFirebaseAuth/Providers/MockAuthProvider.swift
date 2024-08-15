@@ -28,8 +28,15 @@ final class MockAuthProvider: AuthProvider {
         }
     }
     
-    init() {
-        self.authenticatedUser = UserDefaults.userIsSignedIn ? MockAuthProvider.mockUser : nil
+    init(configuration: MockAuthConfiguration) {
+        switch configuration {
+        case .signInAndOut:
+            self.authenticatedUser = UserDefaults.userIsSignedIn ? MockAuthProvider.mockUser : nil
+        case .signedIn:
+            self.authenticatedUser = MockAuthProvider.mockUser
+        case .signedOut:
+            self.authenticatedUser = nil
+        }
     }
     
     private var continuation: AsyncStream<UserAuthInfo?>.Continuation? = nil

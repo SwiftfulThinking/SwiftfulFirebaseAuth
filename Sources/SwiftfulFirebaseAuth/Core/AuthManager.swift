@@ -20,19 +20,23 @@ public struct AuthInfo {
     }
 }
 
+public enum MockAuthConfiguration {
+    case signInAndOut, signedIn, signedOut
+}
+
 public enum Configuration {
-    case mock
+    case mock(_ configuration: MockAuthConfiguration)
     case firebase
     case firebaseAuth(auth: Auth)
     
     var provider: AuthProvider {
         switch self {
+        case .mock(let configuration):
+            return MockAuthProvider(configuration: configuration)
         case .firebase:
             return FirebaseAuthProvider()
         case .firebaseAuth(let auth):
             return FirebaseAuthProvider(firebaseAuth: auth)
-        case .mock:
-            return MockAuthProvider()
         }
     }
 }

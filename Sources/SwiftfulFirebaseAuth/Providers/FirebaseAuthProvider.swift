@@ -192,7 +192,7 @@ struct FirebaseAuthProvider: AuthProvider {
             return result
         }
         
-        return try await auth.auth().signIn(with: credential)
+        return try await auth.signIn(with: credential)
     }
     
     private func updateUserProfile(displayName: String?, firstName: String?, lastName: String?, photoUrl: URL?) async throws -> User? {
