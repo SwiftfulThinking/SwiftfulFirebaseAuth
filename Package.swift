@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "SwiftfulFirebaseAuth",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v13),
+        .macOS(.v10_15)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -16,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.0.0"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.0.0"),
         .package(url: "https://github.com/google/GoogleSignIn-iOS.git", from: "7.0.0")
     ],
     targets: [
