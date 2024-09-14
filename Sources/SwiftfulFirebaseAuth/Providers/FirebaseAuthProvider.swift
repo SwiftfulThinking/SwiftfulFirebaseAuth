@@ -56,7 +56,7 @@ struct FirebaseAuthProvider: AuthProvider {
             
             // Convert Apple Auth to Firebase credential
             let credential = OAuthProvider.credential(
-                withProviderID: AuthProviderOption.apple.rawValue,
+                providerID: AuthProviderID.apple,
                 idToken: appleResponse.token,
                 rawNonce: appleResponse.nonce
             )
@@ -212,7 +212,6 @@ struct FirebaseAuthProvider: AuthProvider {
         
         return Auth.auth().currentUser
     }
-    
     
     private enum AuthError: LocalizedError {
         case noResponse

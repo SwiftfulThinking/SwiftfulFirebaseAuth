@@ -17,8 +17,8 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.0.0"),
-        .package(url: "https://github.com/google/GoogleSignIn-iOS.git", from: "7.0.0")
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.2.0"),
+        .package(url: "https://github.com/google/GoogleSignIn-iOS.git", from: "8.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
