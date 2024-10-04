@@ -1,3 +1,24 @@
+🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+
+ ⚠️ This repository is <strong>deprecated</strong>! It will remain available for those using it, but no further updates will be made. 
+ 
+ ⚠️ Please consider migrating to the new repos: 
+ - https://github.com/SwiftfulThinking/SwiftfulAuthenticating
+ - https://github.com/SwiftfulThinking/SwiftfulAuthenticatingFirebase
+
+ ⚠️ The new repos are restricted to iOS 17+, with Swift 6 and @Observable macro support.
+ 
+ ⚠️ The new parent repo, `SwiftfulAuthenticating`, is dependency agnostic and decoupled from Firebase. This improves testability, mockability, and allows developers to pick-and-choose their auth source.
+
+ ⚠️ Firebase Authentication can still be added to `SwiftfulAuthenticating` via `SwiftfulAuthenticatingFirebase`
+
+ ⚠️ The new repo drops support for Sign In With Phone, as different auth sources handle this differently (tbd).
+
+🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+
+
+
+
 # SwiftfulFirebaseAuth 🤙
 
 Convenience methods to manage Firebase Authentication in Swift projects.
